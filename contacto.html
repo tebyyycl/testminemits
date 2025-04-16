@@ -7,80 +7,69 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Encabezado con el logo y los botones -->
     <header>
-        <div class="contenido-encabezado">
-            <div class="logo-contenedor">
-                <img src="asset/img/logo.png" alt="Logo Minemits" class="logo">
-            </div>
-            <nav class="menu-botones">
-                <a href="index.html" class="boton-morado">Inicio</a>
-                <a href="https://www.40servidoresmc.es/minemits#!" class="boton-morado" target="_blank">Votar</a>
-                <a href="contacto.html" class="boton-morado">Contacto</a>
-            </nav>
-        </div>
+        <img src="asset/img/logo.png" alt="Logo Minemits">
+        <nav>
+            <a href="index.html" class="boton-morado">Inicio</a>
+        </nav>
     </header>
-
-    <!-- Sección del formulario de contacto -->
-    <section class="formulario">
-        <h1 class="titulo-morado">Contacto</h1>
-        <form id="contactForm">
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required>
-            </div>
-
-            <div class="form-group">
-                <label for="username">Nombre de Usuario:</label>
-                <input type="text" id="username" name="username" placeholder="Tu nombre de usuario" required>
-            </div>
-
-            <div class="form-group">
-                <label for="motivo">Motivo del Contacto:</label>
-                <select id="motivo" name="motivo" required>
-                    <option value="" disabled selected>Selecciona un motivo</option>
-                    <option value="bugs">Reportar un Bug</option>
-                    <option value="baneo">Apelar un Baneo</option>
-                    <option value="dudas">Dudas Generales</option>
-                    <option value="sugerencias">Sugerencias</option>
-                    <option value="otros">Otros</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="mensaje">Mensaje:</label>
-                <textarea id="mensaje" name="mensaje" rows="8" placeholder="Escribe tu mensaje aquí..." required></textarea>
-            </div>
-
-            <button type="submit" class="boton-morado">Enviar Mensaje</button>
-        </form>
-
-        <div id="successMessage" class="mensaje-exito" style="display: none;">
-            <p>¡El ticket ha sido enviado correctamente!</p>
-            <button class="boton-verde" onclick="ocultarMensaje()">Aceptar</button>
+    <div class="container">
+        <!-- Formulario de Contacto -->
+        <div class="formulario-contacto">
+            <h2>Contacto</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" placeholder="Ingresa tu correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje:</label>
+                    <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí" required></textarea>
+                </div>
+                <button type="submit" class="boton-morado">Enviar Mensaje</button>
+            </form>
         </div>
-    </section>
+
+        <!-- Banner de Discord -->
+        <div class="discord-banner">
+            <a href="https://discord.gg/minemits" target="_blank">
+                <img src="asset/img/discord-removebg-preview.png" alt="Logo de Discord">
+                <div class="discord-title">Únete a nuestro Discord</div>
+                <div class="discord-subtitle">Haz clic aquí para resolver tus dudas</div>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Minemits. Todos los derechos reservados.</p>
+    </footer>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function(event) {
+        // Manejar el envío del formulario de contacto
+        document.getElementById('contactForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            const nombre = document.getElementById('nombre').value;
             const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const motivo = document.getElementById('motivo').value;
             const mensaje = document.getElementById('mensaje').value;
 
-            const tickets = JSON.parse(localStorage.getItem('tickets')) || [];
-            tickets.push({ email, username, motivo, mensaje, estado: 'Pendiente' });
-            localStorage.setItem('tickets', JSON.stringify(tickets));
+            const response = await fetch('/api/contacto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, email, mensaje })
+            });
 
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('contactForm').reset();
+            if (response.ok) {
+                alert('Tu mensaje ha sido enviado correctamente.');
+                document.getElementById('contactForm').reset();
+            } else {
+                alert('Hubo un error al enviar tu mensaje. Por favor, inténtalo nuevamente.');
+            }
         });
-
-        function ocultarMensaje() {
-            document.getElementById('successMessage').style.display = 'none';
-        }
     </script>
 </body>
 </html>

@@ -33,6 +33,12 @@
         <ul id="actualizacionesLista"></ul>
     </section>
 
+    <!-- Lista de solicitudes de contacto -->
+    <section class="lista-contactos">
+        <h2>Solicitudes de Contacto</h2>
+        <ul id="contactosLista"></ul>
+    </section>
+
     <script>
         // Cargar actualizaciones desde el servidor
         async function cargarActualizaciones() {
@@ -52,54 +58,32 @@
             });
         }
 
-        // Agregar nueva actualización
-        document.getElementById('updateForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+        // Cargar solicitudes de contacto desde el servidor
+        async function cargarContactos() {
+            const response = await fetch('/api/contacto');
+            const contactos = await response.json();
+            const lista = document.getElementById('contactosLista');
+            lista.innerHTML = ''; // Limpiar lista
 
-            const titulo = document.getElementById('titulo').value;
-            const contenido = document.getElementById('contenido').value;
-
-            const response = await fetch('/api/actualizaciones', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ titulo, contenido })
+            contactos.forEach((contacto) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${contacto.nombre}</strong> (${contacto.email}): ${contacto.mensaje} <br>
+                    <small>Fecha: ${new Date(contacto.fecha).toLocaleString()}</small>
+                `;
+                lista.appendChild(li);
             });
-
-            if (response.ok) {
-                document.getElementById('updateForm').reset();
-                cargarActualizaciones();
-            } else {
-                alert('Error al agregar la actualización.');
-            }
-        });
-
-        // Editar una actualización
-        async function editarActualizacion(index) {
-            const titulo = prompt('Nuevo título:');
-            const contenido = prompt('Nuevo contenido:');
-
-            if (titulo && contenido) {
-                const response = await fetch(`/api/actualizaciones/${index}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ titulo, contenido })
-                });
-
-                if (response.ok) {
-                    cargarActualizaciones();
-                } else {
-                    alert('Error al editar la actualización.');
-                }
-            }
         }
+
+        // Cargar las actualizaciones iniciales
+        cargarActualizaciones();
+        cargarContactos();
 
         // Cerrar sesión
         function cerrarSesion() {
-            // Redirigir al inicio de sesión
-            window.location.href = 'index.html';
+            localStorage.removeItem("loggedIn");
+            window.location.href = "index.html";
         }
-
-        cargarActualizaciones();
     </script>
 </body>
 </html>

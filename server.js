@@ -9,7 +9,28 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname)));
+
+// Mapear rutas limpias a archivos HTML
+const cleanRoutes = [
+    { route: '/votar', file: 'votar.html' },
+    { route: '/panel', file: 'panel.html' },
+    { route: '/login', file: 'login.html' },
+    { route: '/index', file: 'index.html' } // Si necesitas que también funcione /index
+];
+
+// Configurar las rutas
+cleanRoutes.forEach(({ route, file }) => {
+    app.get(route, (req, res) => {
+        const filePath = path.join(__dirname, file);
+        if (fs.existsSync(filePath)) {
+            res.sendFile(filePath);
+        } else {
+            res.status(404).send('Página no encontrada');
+        }
+    });
+});
 
 // Endpoint para obtener actualizaciones
 app.get('/api/actualizaciones', (req, res) => {
@@ -108,7 +129,32 @@ app.put('/api/actualizaciones/:index', (req, res) => {
     }
 });
 
+// Endpoint para eliminar una actualización
+app.delete('/api/actualizaciones/:index', (req, res) => {
+    const { index } = req.params;
+    const filePath = path.join(__dirname, 'data', 'actualizaciones.json');
+
+    console.log(`[DELETE] Solicitud para eliminar actualización. Índice: ${index}`);
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'No se encontraron actualizaciones.' });
+    }
+
+    const actualizaciones = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+    if (index < 0 || index >= actualizaciones.length) {
+        return res.status(400).json({ error: 'Índice inválido.' });
+    }
+
+    // Eliminar actualización
+    const eliminada = actualizaciones.splice(index, 1);
+    fs.writeFileSync(filePath, JSON.stringify(actualizaciones, null, 2));
+
+    console.log('[DELETE] Actualización eliminada:', eliminada);
+    res.json({ message: 'Actualización eliminada correctamente.' });
+});
+
 // Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
 });

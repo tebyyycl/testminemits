@@ -3,50 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Minemits</title>
+    <title>Inicio de Sesión - Minemits</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="login-body">
-    <div class="login-container">
-        <div class="login-logo">
-            <img src="asset/img/logo.png" alt="Logo Minemits">
+<body>
+    <h1 class="titulo-morado">Admin Panel - Login</h1>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
         </div>
-        <form id="loginForm" class="login-form">
-            <h1>Iniciar Sesión</h1>
-            <div class="form-group">
-                <label for="username">Usuario:</label>
-                <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-            </div>
-            <button type="submit" class="boton-morado">Iniciar Sesión</button>
-        </form>
-        <button onclick="volverInicio()" class="boton-rojo">Volver a la Página Principal</button>
-    </div>
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+        </div>
+        <button type="submit" class="boton-morado">Iniciar Sesión</button>
+    </form>
 
     <script>
-        const usuarios = [
+        const usuariosValidos = [
             { username: "estxbvnn", password: "T3bysinho12$" },
-            { username: "DonFerito", password: "F3rito12$" }
+            { username: "DonFerito", password: "F3rito12$" },
+            { username: "itsAlanLT", password: "Al4n12$" }
         ];
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const usuarioValido = usuarios.find(user => user.username === username && user.password === password);
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const usuarioValido = usuariosValidos.find(
+                user => user.username === username && user.password === password
+            );
+
             if (usuarioValido) {
-                sessionStorage.setItem('isLoggedIn', true); 
-                window.location.href = 'panel.html'; 
+                localStorage.setItem("loggedIn", "true");
+
+                window.location.href = "panel.html";
             } else {
-                alert('Usuario o contraseña incorrectos');
+                alert("Usuario o contraseña incorrectos.");
             }
         });
-        function volverInicio() {
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>

@@ -11,7 +11,6 @@
         <div class="contenido-encabezado">
             <div class="logo-contenedor">
                 <div class="logo" aria-label="Logo Minemits"></div>
-                <span class="titulo-logo">Minemits</span>
             </div>
             <nav>
                 <a href="index.html" class="boton-morado">Inicio</a>
@@ -35,7 +34,7 @@
             const contenedor = document.getElementById('actualizacionesDinamicas');
             contenedor.innerHTML = ''; // Limpiar contenedor
 
-            actualizaciones.forEach((actualizacion) => {
+            actualizaciones.forEach((actualizacion, index) => {
                 const article = document.createElement('article');
                 article.classList.add('novedad');
                 article.innerHTML = `
@@ -45,6 +44,19 @@
                 `;
                 contenedor.appendChild(article);
             });
+        }
+
+        async function eliminarActualizacion(index) {
+            const response = await fetch(`/api/actualizaciones/${index}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Actualización eliminada correctamente.');
+                cargarActualizacionesDinamicas();
+            } else {
+                alert('Error al eliminar la actualización.');
+            }
         }
 
         cargarActualizacionesDinamicas();
