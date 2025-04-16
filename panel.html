@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Minemits</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1 class="titulo-morado" id="panelTitle">Panel de Control</h1>
+    <p id="visitorCount" class="visitor-count">Visitantes en la página: 0</p>
+    <button onclick="cerrarSesion()" class="boton-rojo">Cerrar Sesión</button>
+
+    <!-- Formulario para añadir actualizaciones -->
+    <section class="formulario-actualizaciones">
+        <h2>Añadir Actualización</h2>
+        <form id="updateForm">
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" placeholder="Título de la actualización" required>
+            </div>
+            <div class="form-group">
+                <label for="contenido">Contenido:</label>
+                <textarea id="contenido" name="contenido" placeholder="Descripción de la actualización" required></textarea>
+            </div>
+            <button type="submit" class="boton-morado">Añadir Actualización</button>
+        </form>
+    </section>
+
+    <!-- Lista de actualizaciones -->
+    <section class="lista-actualizaciones">
+        <h2>Actualizaciones Recientes</h2>
+        <ul id="actualizacionesLista"></ul>
+    </section>
+
+    <script>
+        // Cargar actualizaciones desde el servidor
+        async function cargarActualizaciones() {
+            const response = await fetch('/api/actualizaciones');
+            const actualizaciones = await response.json();
+            const lista = document.getElementById('actualizacionesLista');
+            lista.innerHTML = ''; // Limpiar lista
+
+            actualizaciones.forEach((actualizacion, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${actualizacion.titulo}</strong>: ${actualizacion.contenido}
+                    <button onclick="editarActualizacion(${index})" class="boton-amarillo">Editar</button>
+                    <button onclick="eliminarActualizacion(${index})" class="boton-rojo">Eliminar</button>
+                `;
+                lista.appendChild(li);
+            });
+        }
+
+        // Agregar nueva actualización
+        document.getElementById('updateForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const titulo = document.getElementById('titulo').value;
+            const contenido = document.getElementById('contenido').value;
+
+            const response = await fetch('/api/actualizaciones', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titulo, contenido })
+            });
+
+            if (response.ok) {
+                document.getElementById('updateForm').reset();
+                cargarActualizaciones();
+            } else {
+                alert('Error al agregar la actualización.');
+            }
+        });
+
+        // Editar una actualización
+        async function editarActualizacion(index) {
+            const titulo = prompt('Nuevo título:');
+            const contenido = prompt('Nuevo contenido:');
+
+            if (titulo && contenido) {
+                const response = await fetch(`/api/actualizaciones/${index}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ titulo, contenido })
+                });
+
+                if (response.ok) {
+                    cargarActualizaciones();
+                } else {
+                    alert('Error al editar la actualización.');
+                }
+            }
+        }
+
+        // Cerrar sesión
+        function cerrarSesion() {
+            // Redirigir al inicio de sesión
+            window.location.href = 'index.html';
+        }
+
+        cargarActualizaciones();
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minemits</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Banner de Discord -->
+    <div class="discord-banner">
+        <a href="https://discord.gg/minemits" target="_blank">
+            <img src="asset/img/discord-removebg-preview.png" alt="Logo de Discord" class="discord-logo">
+            <div class="discord-text">
+                <span class="discord-title">Únete al servidor</span>
+                <span class="discord-subtitle">Haz clic para unirte</span>
+            </div>
+        </a>
+    </div>
+
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <aside class="menu-lateral" id="menuLateral">
+        <nav>
+            <ul>
+                <li><a href="#" class="boton-morado">Inicio</a></li>
+                <li><a href="votar.html" class="boton-morado">Votar</a></li>
+                <li><a href="contacto.html" class="boton-morado">Contacto</a></li>
+                <li><a href="panel.html" class="boton-morado">Panel de Control</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main>
+        <section class="hero">
+            <div class="logo-centro">
+                <img src="asset/img/logo.png" alt="Logo Minemits">
+            </div>
+            <div class="mensaje-centro">
+                <p class="texto-morado">Somos un servidor de Minecraft, principalmente en el ámbito de survival.</p>
+                <p class="texto-morado">Nuestro servidor promueve un survival tropical muy divertido y te invitamos a probarlo en</p>
+                <p class="ip-destacada">PLAY.MINEMITS.COM</p>
+                <p class="jugadores-conectados">Jugadores Conectados: <span id="playerCount">Cargando...</span></p>
+            </div>
+        </section>
+
+        <!-- Características -->
+        <section class="caracteristicas">
+            <div class="caracteristica">
+                <h2 class="titulo-morado">Actualizaciones & Novedades</h2>
+                <p>Descubre las últimas actualizaciones, eventos y novedades de nuestro servidor. Mantente al día con todo lo que ocurre en Minemits.</p>
+                <a href="actualizaciones.html" class="boton-morado">Ver Actualizaciones</a>
+            </div>
+            <div class="caracteristica">
+                <h2 class="titulo-morado">Votar</h2>
+                <p>Apoya nuestro servidor votando en las plataformas disponibles. ¡Cada voto cuenta!</p>
+                <a href="votar.html" class="boton-morado">Ir a Votar</a>
+            </div>
+            <div class="caracteristica">
+                <h2 class="titulo-morado">Tienda</h2>
+                <p>Explora nuestra tienda para adquirir rangos, objetos exclusivos y mucho más. Apoya el servidor mientras disfrutas de beneficios únicos.</p>
+                <a href="https://tienda.minemits.com" class="boton-morado" target="_blank">Ir a la Tienda</a>
+            </div>
+            <div class="caracteristica">
+                <h2 class="titulo-morado">Staff</h2>
+                <p>Conoce al staff de nuestro servidor. Ellos están aquí para ayudarte y garantizar que tengas la mejor experiencia posible.</p>
+                <a href="staff.html" class="boton-morado">Ver al Staff</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Minemits. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menuLateral');
+            const toggleButton = document.querySelector('.menu-toggle');
+            menu.classList.toggle('menu-abierto');
+            toggleButton.classList.toggle('menu-abierto');
+        }
+        async function fetchPlayerCount() {
+            const serverIp = "play.minemits.com"; 
+            const apiUrl = `https://api.mcsrvstat.us/2/${serverIp}`; 
+    
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+    
+                if (data.online) {
+                    document.getElementById('playerCount').textContent = `${data.players.online} / ${data.players.max}`;
+                } else {
+                    document.getElementById('playerCount').textContent = "Servidor fuera de línea";
+                }
+            } catch (error) {
+                console.error("Error al obtener el estado del servidor:", error);
+                document.getElementById('playerCount').textContent = "Error al cargar";
+            }
+        }
+    
+        fetchPlayerCount();
+    </script>
+</body>
+</html>

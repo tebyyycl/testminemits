@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizaciones - Minemits</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="contenido-encabezado">
+            <div class="logo-contenedor">
+                <div class="logo" aria-label="Logo Minemits"></div>
+                <span class="titulo-logo">Minemits</span>
+            </div>
+            <nav>
+                <a href="index.html" class="boton-morado">Inicio</a>
+                <a href="contacto.html" class="boton-morado">Contacto</a>
+            </nav>
+        </div>
+    </header>
+    <section class="actualizaciones">
+        <h1 class="titulo-morado">Actualizaciones & Novedades</h1>
+        <!-- Contenedor para actualizaciones dinámicas -->
+        <div id="actualizacionesDinamicas"></div>
+    </section>
+    <footer>
+        <p>&copy; 2025 Minemits. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        async function cargarActualizacionesDinamicas() {
+            const response = await fetch('/api/actualizaciones');
+            const actualizaciones = await response.json();
+            const contenedor = document.getElementById('actualizacionesDinamicas');
+            contenedor.innerHTML = ''; // Limpiar contenedor
+
+            actualizaciones.forEach((actualizacion) => {
+                const article = document.createElement('article');
+                article.classList.add('novedad');
+                article.innerHTML = `
+                    <h2 class="titulo-morado">${actualizacion.titulo}</h2>
+                    <p>${actualizacion.contenido}</p>
+                    <small>Fecha: ${new Date(actualizacion.fecha).toLocaleString()}</small>
+                `;
+                contenedor.appendChild(article);
+            });
+        }
+
+        cargarActualizacionesDinamicas();
+    </script>
+</body>
+</html>
